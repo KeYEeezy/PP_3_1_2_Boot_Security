@@ -3,22 +3,21 @@ package ru.kata.spring.boot_security.demo.models;
 
 import org.hibernate.validator.constraints.UniqueElements;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.*;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "users")
 @Component
-public class User {
+public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -104,14 +103,12 @@ public class User {
         return roles;
     }
 
-    public void setRoles(Set<Role> roles) {
-        this.roles = roles;
+    public void setRoles(String roles) {
+        this.roles = Arrays.asList(roles).stream().map(Role::new).collect(Collectors.toSet());
     }
 
-    public List<SimpleGrantedAuthority> getAuthorities() {
 
-        return roles.stream().map(r->new SimpleGrantedAuthority(r.getName())).collect(Collectors.toList());
-    }
+
 
 
     @Override
@@ -136,5 +133,31 @@ public class User {
     @Override
     public int hashCode() {
         return Objects.hash(id, username, password, name, age, roles);
+    }
+
+    @Override
+    public List<SimpleGrantedAuthority> getAuthorities() {
+
+        return roles.stream().map(r->new SimpleGrantedAuthority(r.getName())).collect(Collectors.toList());
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
     }
 }

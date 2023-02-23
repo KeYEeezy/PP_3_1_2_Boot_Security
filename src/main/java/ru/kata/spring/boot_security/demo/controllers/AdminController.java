@@ -7,6 +7,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import ru.kata.spring.boot_security.demo.models.User;
 import ru.kata.spring.boot_security.demo.services.UserService;
+import ru.kata.spring.boot_security.demo.util.UserValidator;
 
 import javax.validation.Valid;
 
@@ -15,9 +16,12 @@ import javax.validation.Valid;
 public class AdminController {
     private final UserService userService;
 
+    private final UserValidator validator;
+
     @Autowired
-    public AdminController(UserService userService) {
+    public AdminController(UserService userService, UserValidator validator) {
         this.userService = userService;
+        this.validator = validator;
     }
 
     @GetMapping()
@@ -33,13 +37,16 @@ public class AdminController {
     }
 
     @GetMapping("/new")
-    public String newUser(@ModelAttribute("user") @Valid User user) {
+    public String newUser(@ModelAttribute("user") User user) {
+
         return "admin/new";
     }
 
     @PostMapping()
     public String create(@ModelAttribute("user") @Valid User user,
                          BindingResult bindingResult) {
+        validator.validate(user,bindingResult);
+
         if (bindingResult.hasErrors())
             return "admin/new";
 

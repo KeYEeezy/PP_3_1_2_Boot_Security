@@ -24,10 +24,6 @@
     <label for="password">Enter password: </label>
     <input type="text" th:field="*{password}" id="password"/>
     <div style="color: red" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">Password error</div>
-    <br/>
-    label for="roles">Enter role: </label>
-    <input type="text" th:field="*{roles}" id="email"/>
-    <div style="color: red" th:if="${#fields.hasErrors('roles')}" th:errors="*{roles}">Roles error</div>
     <hr/>
     <input type="submit" value="Update!"/>
 

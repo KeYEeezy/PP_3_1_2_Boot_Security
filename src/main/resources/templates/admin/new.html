@@ -9,7 +9,7 @@
 </head>
 <body>
 
-<form th:method="POST" th:action="@{/admin}" th:object="${user}">
+<form align="center" th:method="POST" th:action="@{/admin}" th:object="${user}">
     <label for="name">Enter name:</label>
     <input type="text"  th:field="*{name}" id="name"/>
     <div style="color: red" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Name error</div>
@@ -25,10 +25,6 @@
     <label for="password">Enter password:</label>
     <input type="text"  th:field="*{password}" id="password"/>
     <div style="color: red" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">Password error</div>
-    <br/>
-    <label for="roles">Enter roles:</label>
-    <input type="text"  th:field="*{roles}" id="roles"/>
-    <div style="color: red" th:if="${#fields.hasErrors('roles')}" th:errors="*{roles}">Roles error</div>
     <hr/>
     <input type="submit" value="Create!"/>
 </form>
