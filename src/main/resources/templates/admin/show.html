@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Show</title>
+</head>
+<body>
+
+<p th:text="${'User id: ' + user.getId()}">VALUE</p>
+<p th:text="${'Name: ' + user.getName()}">VALUE</p>
+<p th:text="${'Login: ' + user.getUsername()}">VALUE</p>
+<p th:text="${'Age: ' + user.getAge()}">VALUE</p>
+<p th:text="${'User password: ' + user.getPassword()}">VALUE</p>
+<p th:text="${'User roles: ' + user.getRoles()}">VALUE</p>
+
+<div sec:authorize="hasRole('ROLE_ADMIN')">
+    <form th:action="@{/admin/{id}/edit(id=${user.getId()})}">
+        <input type="submit" value="Edit"/>
+    </form>
+</div>
+<hr/>
+<div sec:authorize="hasRole('ROLE_ADMIN')">
+    <form th:method="DELETE" th:action="@{/admin/{id}(id=${user.getId()})}">
+        <input type="submit" value="Delete"/>
+    </form>
+    <hr/>
+</div>
+<div sec:authorize="hasRole('ROLE_USER')">
+    <form th:action="@{/logout}">
+        <input type="submit" value="Logout!"/>
+    </form>
+</div>
+<hr/>
+<div sec:authorize="hasRole('ROLE_ADMIN')">
+    <form th:action="@{/admin}">
+        <input type="submit" value="To users list"/>
+    </form>
+</div>
+</body>
+</html>
