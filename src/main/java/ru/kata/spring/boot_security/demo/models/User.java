@@ -1,18 +1,12 @@
 package ru.kata.spring.boot_security.demo.models;
 
 
-import org.hibernate.validator.constraints.UniqueElements;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.*;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "users")
@@ -22,41 +16,34 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "username")
-    @NotEmpty(message = "Поле не модет быть пустым")
-    @Size(min = 2, max = 50, message = "поле должно содержать не менее двух символом")
+    @Column(name = "username", unique = true)
     private String username;
     @Column(name = "password")
-    @NotEmpty(message = "поле должно быть пустым")
     private String password;
     @Column(name = "name")
-    @NotEmpty(message = "Поле не может быть пустым")
-    @Size(min = 2, max = 30, message = "Поле должно содержать не менее двух символов")
     private String name;
     @Column(name = "age")
-    @Min(value = 0, message = "Поле не может быть отрицательным")
     private int age;
 
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinTable(
-            name = "user_role"
-            , joinColumns = @JoinColumn(name = "user_id")
-            , inverseJoinColumns = @JoinColumn(name = "role_id")
+            name = "users_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id")
     )
-    private Set<Role> roles;
-
+    private List<Role> roles;
 
 
     public User() {
 
     }
 
-    public User(String username, String password, String name, int age, Collection<String> roles) {
+    public User(String username, String password, String name, int age, List<Role> roles) {
         this.username = username;
         this.password = password;
         this.name = name;
         this.age = age;
-        this.roles = roles.stream().map(Role::new).collect(Collectors.toSet());
+        this.roles = roles;
     }
 
     public Long getId() {
@@ -99,17 +86,13 @@ public class User implements UserDetails {
         this.age = age;
     }
 
-    public Set<Role> getRoles() {
+    public List<Role> getRoles() {
         return roles;
     }
 
-    public void setRoles(String roles) {
-        this.roles = Arrays.asList(roles).stream().map(Role::new).collect(Collectors.toSet());
+    public void setRoles(List<Role> roles) {
+        this.roles = roles;
     }
-
-
-
-
 
     @Override
     public String toString() {
@@ -119,6 +102,7 @@ public class User implements UserDetails {
                 ", password='" + password + '\'' +
                 ", name='" + name + '\'' +
                 ", age=" + age +
+                ", roles=" + roles +
                 '}';
     }
 
@@ -136,9 +120,8 @@ public class User implements UserDetails {
     }
 
     @Override
-    public List<SimpleGrantedAuthority> getAuthorities() {
-
-        return roles.stream().map(r->new SimpleGrantedAuthority(r.getName())).collect(Collectors.toList());
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return getRoles();
     }
 
     @Override

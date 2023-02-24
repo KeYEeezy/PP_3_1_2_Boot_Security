@@ -1,33 +1,43 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" xmlns:th="http://www.thymeleaf.org">
-<html lang="en">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Update user</title>
 </head>
 <body>
-
+<div th:align="right">
+    Your login is: <b th:inline="text"> [[${#httpServletRequest.remoteUser}]] </b>
+    <form th:action="@{/logout}" method="POST">
+        <input type="submit" value="Logout"/>
+    </form>
+</div>
 <form th:method="PATCH" th:action="@{/admin/{id}(id=${user.getId()})}" th:object="${user}">
 
-    <label for="username">Enter username: </label>
-    <input type="text" th:field="*{username}" id="username"/>
-    <div style="color: red" th:if="${#fields.hasErrors('username')}" th:errors="*{username}">Username error</div>
-    <br/>
-    <label for="name">Enter name: </label>
+    <label for="name">Enter name :</label>
     <input type="text" th:field="*{name}" id="name"/>
-    <div style="color: red" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Name error</div>
     <br/>
-    <label for="age">Enter age: </label>
+    <br/>
+    <label for="age">Enter age :</label>
     <input type="text" th:field="*{age}" id="age"/>
-    <div style="color: red" th:if="${#fields.hasErrors('age')}" th:errors="*{age}">Age error</div>
     <br/>
-    <label for="password">Enter password: </label>
+    <br/>
+    <label for="username">Enter userName :</label>
+    <input type="text" th:field="*{username}" id="username"/>
+    <br/>
+    <br/>
+    <label for="password">Enter password :</label>
     <input type="text" th:field="*{password}" id="password"/>
-    <div style="color: red" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">Password error</div>
-    <hr/>
+    <br/>
+    <br/>
+    <label for="roles">Select roles: </label>
+    <th:block th:each="role : ${roleList}">
+        <input id="roles" type="checkbox" th:field="*{roles}"
+               th:value="${role.id}"
+               th:text="${role.name}" />
+    </th:block>
+    <br/>
+    <br/>
     <input type="submit" value="Update!"/>
-
 </form>
-
 </body>
 </html>
