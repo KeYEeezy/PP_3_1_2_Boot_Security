@@ -20,17 +20,7 @@ public class Role implements GrantedAuthority {
 
     @Column(name = "name")
     private String name;
-//    @Transient
-//    @ManyToMany(mappedBy = "roles")
-//    private Set<User> user;
 
-//    public Set<User> getUser() {
-//        return user;
-//    }
-//
-//    public void setUser(Set<User> user) {
-//        this.user = user;
-//    }
 
     public Role() {
     }
