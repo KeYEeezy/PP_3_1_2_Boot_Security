@@ -23,14 +23,15 @@ public class AdminController {
 
     @GetMapping()
     public String allUser(Model model) {
-        System.out.println(userService.findAll());
         model.addAttribute("users", userService.findAll());
+        System.out.println(userService.findAll());
         return "admin/all";
     }
 
     @GetMapping("/{id}")
     public String showUser(@PathVariable("id") Long id, Model model) {
         model.addAttribute("user", userService.findUser(id));
+
         return "admin/show";
     }
 

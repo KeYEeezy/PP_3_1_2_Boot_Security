@@ -15,6 +15,7 @@ import ru.kata.spring.boot_security.demo.repositories.UserRepository;
 ;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 @Transactional(readOnly = true)
@@ -37,17 +38,12 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
-        User user = userRepository.findByUsername(username).orElse(null);
-        System.out.println(user);
-        System.out.println(roleRepository.findAll());
+        User userAuth = userRepository.findByUsername(username).orElse(null);
 
-
-        if (user == null)
+        if (userAuth == null)
             throw new UsernameNotFoundException("User not found");
 
-        return new org.springframework.security.core.userdetails.User(user.getUsername(),user.getPassword(), user.getAuthorities());
-
-
+        return userAuth;
     }
 
 
@@ -66,6 +62,7 @@ public class UserServiceImpl implements UserService {
     public User findUser(Long id) {
         Optional<User> findUser = userRepository.findById(id);
         return findUser.orElse(null);
+
     }
 
     public User findByUsername(String username) {
